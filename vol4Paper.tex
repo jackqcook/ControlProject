@@ -143,7 +143,7 @@ $\{-1, 0, 1\}^3$, projected onto the unit sphere and scaled to a fixed cruising
 speed, covering hover as well as all axis-aligned and diagonal flight directions.
 
 Because LQR and Kalman filter design require a discrete-time model, we discretize 
-each linearization using a forward Euler approximation with timestep $\Delta t$:
+each linearization using a forward Euler approximation with time step $\Delta t$:
 \[
 A_d = I + A\,\Delta t, \qquad B_d = B\,\Delta t.
 \]
@@ -152,7 +152,7 @@ This gives a discrete-time linear model
 \mathbf{x}_{k+1} = A_d \mathbf{x}_k + B_d \mathbf{u}_k + w_k
 \]
 at each of the 27 operating points. These sets of gains are pre-computed
-before simulation begins, so that during the simulation the scheduler simply performs a nearest-neighbor lookup to select the appropriate $A_d$, $B_d$, $K$, and $L$ at each timestep.
+before simulation begins, so that during the simulation the scheduler simply performs a nearest-neighbor lookup to select the appropriate $A_d$, $B_d$, $K$, and $L$ at each time step.
 
 \subsection{Kalman Filter Design}
 
@@ -238,7 +238,7 @@ Figure~\ref{fig:camera} shows the target's position over time in the tracker's b
 %%Fourth Section
 \section{\textbf{Conclusion}}
 
-The gain-scheduled LQG framework successfully solved the UCAV tracking problem across a wide range of flight conditions. By pre-computing LQR and Kalman filter gains at 27 trim operating points and selecting the nearest at each timestep, the controller maintained close pursuit of an aggressively maneuvering target throughout a 20-second simulation under both process and measurement noise. The 3D trajectory results show that after a brief initial acquisition transient the tracker closely mirrors the target's path, and the camera view results confirm that the 1-meter standoff objective is achieved.
+The gain-scheduled LQG framework successfully solved the UCAV tracking problem across a wide range of flight conditions. By pre-computing LQR and Kalman filter gains at 27 trim operating points and selecting the nearest at each time step, the controller maintained close pursuit of an aggressively maneuvering target throughout a 20-second simulation under both process and measurement noise. The 3D trajectory results show that after a brief initial acquisition transient the tracker closely mirrors the target's path, and the camera view results confirm that the 1-meter standoff objective is achieved.
 
 While the gain-scheduled LQG framework demonstrates strong performance in simulation, limitations remain. The controller relies on locally linear approximations, which may degrade under highly aggressive maneuvers or dynamics far from the predefined operating points. From an ethical perspective, the underlying techniques used in this paper are directly applicable to autonomous aerial systems with potential military use. This highlights the importance of considering responsible deployment and adherence to regulatory frameworks when developing and applying such control systems.
 
