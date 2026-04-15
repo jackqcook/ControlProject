@@ -38,7 +38,7 @@ Autonomous drone on drone tracking presents a complex control problem in which a
 
 \subsection{Approach}
 To address this challenge, we apply a gain scheduling LQG framework that turns the nonlinear tracking problem into a series of locally linear subproblems. We pre-compute linearizations of the quadrotor's dynamics at 27 trim operating points, computing an optimal LQR controller and Kalman filter at each point. During simulation, 
-a scheduler selects the nearest operating point to the current state estimate at each timestep, applying the corresponding gains. This allows us to maintain close to optimal performance across a broad range of flight dynamics.
+a scheduler selects the nearest operating point to the current state estimate at each time step, applying the corresponding gains. This allows us to maintain close to optimal performance across a broad range of flight dynamics.
 
 We specifically: (1) derive a physics-based 12-state nonlinear model, (2) linearize and discretize the dynamics at 27 operating points, (3) compute LQR and Kalman filter gains at each point, and (4) validate the system in a closed-loop simulation using full nonlinear dynamics under process and measurement noise to assess tracking performance.
 
