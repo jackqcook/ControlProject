@@ -193,11 +193,11 @@ With a state estimate $\hat{\mathbf{x}}_k$ in hand from the Kalman filter, we ne
 J_{LQR} = \sum_{k=0}^{\infty} \left[(\mathbf{x}_k - \mathbf{x}_d)^\top Q\,(\mathbf{x}_k - \mathbf{x}_d) + \mathbf{u}_k^\top R\,\mathbf{u}_k\right],
 \]
 
-This Linear Quadratic Regulator finds the gain matrix $K$ that minimizes our infinite-horizon cost J. Under this formulation, $\mathbf{x}_d$ represents the desired state, while $\mathbf{x}_k$ represents our current state at timestep k. $Q$ and $R$ are used as tuning weights where $Q$ penalizes deviation from the goal by maintaining the tracker exactly 1 meter directly behind the target, while $R$ penalizes control effort by discouraging overly aggressive inputs. We solve for $K$ at each of the 27 operating points offline via the discrete algebraic Riccati equation, storing the result in the schedule bank alongside $L$.
+This Linear Quadratic Regulator finds the gain matrix $K$ that minimizes our infinite-horizon cost J. Under this formulation, $\mathbf{x}_d$ represents the desired state, while $\mathbf{x}_k$ represents our current state at time step k. $Q$ and $R$ are used as tuning weights where $Q$ penalizes deviation from the goal by maintaining the tracker exactly 1 meter directly behind the target, while $R$ penalizes control effort by discouraging overly aggressive inputs. We solve for $K$ at each of the 27 operating points offline via the discrete algebraic Riccati equation, storing the result in the schedule bank alongside $L$.
 
 \subsection{Gain Scheduling}
 
-The Kalman gain $L$ and LQR gain $K$ from the previous two sections are each tied to a specific linearization, so rather than picking one, we pre-compute a $(K, L)$ pair for all 27 trim points and store them in a bank. At every timestep during simulation, the scheduler selects the active operating point by finding the trim condition whose equilibrium velocity, attitude, and body-rate states are nearest to the current estimate:
+The Kalman gain $L$ and LQR gain $K$ from the previous two sections are each tied to a specific linearization, so rather than picking one, we pre-compute a $(K, L)$ pair for all 27 trim points and store them in a bank. At every time step during simulation, the scheduler selects the active operating point by finding the trim condition whose equilibrium velocity, attitude, and body-rate states are nearest to the current estimate:
 \[
 \sigma_k = \underset{\sigma}{\arg\min}\;\left\|\hat{\mathbf{x}}_k - \mathbf{x}_{\mathrm{eq},\sigma}\right\|_2.
 \]
