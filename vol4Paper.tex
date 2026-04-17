@@ -100,7 +100,7 @@ which follows from Euler-angle kinematics. The body rates of the quadrotor, repr
 \dot{q} &= \frac{l(u_3 - u_1) - (J_z - J_x)pr}{J_y}, \\
 \dot{r} &= \frac{c_\tau(u_1 - u_2 + u_3 - u_4) - (J_y - J_x)pq}{J_z},
 \end{align*}
-where $J_x, J_y, J_z$ are the principal moments of inertia, $l$ is the rotor arm length, and $c_\tau$ is the torque coefficient.
+where $J_x, J_y, J_z$ are the principal moments of inertia, $l$ is the rotor arm length, and $c_\tau$ is the torque coefficient. This formula comes from the angular momentum cross-product formula, which we need to use because of the effects each rotor has on the other moments of rotation.
 
 Together, these equations fully define every component of $\dot{\mathbf{x}} = f(\mathbf{x}, \mathbf{u})$. 
 giving us a single vector of the complete state derivative:
@@ -133,7 +133,15 @@ A = \left.\frac{\partial f}{\partial \mathbf{x}}\right|_{\mathbf{x}_{\text{eq}},
 \qquad
 B = \left.\frac{\partial f}{\partial \mathbf{u}}\right|_{\mathbf{x}_{\text{eq}},\,\mathbf{u}_{\text{eq}}},
 \]
-via central finite differences. This yields the continuous-time linear model
+via central finite differences. This is accomplished as follows: For all 12 columns 
+of the 12x12 Jacobian matrix, we populate the column by the formula 
+
+\[
+J_{:,i} = \frac{f(x_{eq} + \epsilon e_i, u_{eq}) - f(x_{eq} - \epsilon e_i, u_{eq})}{2\epsilon}
+\]
+and B is computed similarly with the other argument of $f$.
+
+This yields the continuous-time linear model
 \[
 \dot{\mathbf{x}} = A\mathbf{x} + B\mathbf{u} + w, \qquad y = C\mathbf{x} + v,
 \]
@@ -193,7 +201,9 @@ With a state estimate $\hat{\mathbf{x}}_k$ in hand from the Kalman filter, we ne
 J_{LQR} = \sum_{k=0}^{\infty} \left[(\mathbf{x}_k - \mathbf{x}_d)^\top Q\,(\mathbf{x}_k - \mathbf{x}_d) + \mathbf{u}_k^\top R\,\mathbf{u}_k\right],
 \]
 
-This Linear Quadratic Regulator finds the gain matrix $K$ that minimizes our infinite-horizon cost J. Under this formulation, $\mathbf{x}_d$ represents the desired state, while $\mathbf{x}_k$ represents our current state at time step k. $Q$ and $R$ are used as tuning weights where $Q$ penalizes deviation from the goal by maintaining the tracker exactly 1 meter directly behind the target, while $R$ penalizes control effort by discouraging overly aggressive inputs. We solve for $K$ at each of the 27 operating points offline via the discrete algebraic Riccati equation, storing the result in the schedule bank alongside $L$.
+This Linear Quadratic Regulator finds the gain matrix $K$ that minimizes our infinite-horizon cost J. Under this formulation, $\mathbf{x}_d$ represents the desired state, while $\mathbf{x}_k$ represents our current state at time step k. In our case, $\mathbf{x}_d = [1, 0, 0]^T$ because we define "1 meter behind" as in the tracker's body frame, the target is 1 meter in the x-direction and 0 offset in the other axes. Note that the $x_k$ must be rotated into the body frame in order to compute this. 
+
+$Q$ and $R$ are used as tuning weights where $Q$ penalizes deviation from the goal by maintaining the tracker exactly 1 meter directly behind the target, while $R$ penalizes control effort by discouraging overly aggressive inputs. We solve for $K$ at each of the 27 operating points offline via the discrete algebraic Riccati equation, storing the result in the schedule bank alongside $L$.
 
 \subsection{Gain Scheduling}
 
@@ -263,6 +273,12 @@ Future work could extend this approach by incorporating rotor saturation constra
 K. J. Åström and R. M. Murray,
 \textit{Feedback Systems: An Introduction for Scientists and Engineers},
 Princeton University Press, 2008.
+
+\bibitem{}
+Dul, Franciszek, Piotr Lichota, and Artur Rusowicz. "Generalized linear quadratic control for a full tracking problem in aviation." Sensors 20.10 (2020): 2955.
+
+\bibitem{}
+Doyle, John C. "Guaranteed margins for LQG regulators." (1978).
 
 \end{thebibliography}
 
